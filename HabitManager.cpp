@@ -1,119 +1,160 @@
 #include "HabitManager.h"
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
 
 using namespace std;
 
-HabitManager::HabitManager() : nextId(1) {}
+void HabitManager::addHabit()
+{
+    string name;
+    string category;
+    int type;
 
-void HabitManager::addHabit(shared_ptr<Habit> habit) {
-    habits.push_back(habit);
-    if (habit->getId() >= nextId) nextId = habit->getId() + 1;
-}
+    cout << endl;
+    cout << "========== ADD HABIT ==========" << endl;
+    cout << "Enter Habit Name: ";
+    cin >> name;
+    cout << "Enter Category: ";
+    cin >> category;
+    cout << endl;
+    cout << "1. Daily Habit" << endl;
+    cout << "2. Weekly Habit" << endl;
+    cout << endl;
+    cout << "Select Type: ";
+    cin >> type;
 
-bool HabitManager::deleteHabit(int id) {
-    auto it = remove_if(habits.begin(), habits.end(),
-        [id](const shared_ptr<Habit>& h){ return h->getId() == id; });
-    if (it == habits.end()) return false;
-    habits.erase(it, habits.end());
-    return true;
-}
-
-bool HabitManager::editHabit(int id, const string& name,
-                               const string& cat,
-                               const string& diff) {
-    auto h = findById(id);
-    if (!h) return false;
-    if (!name.empty()) h->setName(name);
-    if (!cat.empty())  h->setCategory(cat);
-    if (!diff.empty()) h->setDifficulty(diff);
-    return true;
-}
-
-shared_ptr<Habit> HabitManager::findById(int id) {
-    for (auto& h : habits)
-        if (h->getId() == id) return h;
-    return nullptr;
-}
-
-vector<shared_ptr<Habit>>
-HabitManager::searchByName(const string& keyword) const {
-    vector<shared_ptr<Habit>> result;
-    for (auto& h : habits) {
-        string lower = h->getName();
-        transform(lower.begin(), lower.end(), lower.begin(), ::tolower);
-        string kl = keyword;
-        transform(kl.begin(), kl.end(), kl.begin(), ::tolower);
-        if (lower.find(kl) != string::npos) result.push_back(h);
+    if(type == 1)
+    {
+        habits.push_back(new DailyHabit(name, category));
     }
-    return result;
-}
-
-vector<shared_ptr<Habit>>
-HabitManager::filterByCategory(const string& cat) const {
-    vector<shared_ptr<Habit>> result;
-    for (auto& h : habits) {
-        string hc = h->getCategory();
-        transform(hc.begin(), hc.end(), hc.begin(), ::tolower);
-        string cl = cat;
-        transform(cl.begin(), cl.end(), cl.begin(), ::tolower);
-        if (hc == cl) result.push_back(h);
+    else
+    {
+        habits.push_back(new WeeklyHabit(name, category));
     }
-    return result;
+    cout << endl;
+    cout << "Habit Added Successfully!" << endl;
 }
 
-void HabitManager::listAll() const {
-    if (habits.empty()) {
-        cout << "\n  No habits found.\n";
+void HabitManager::viewHabits()
+{
+    cout << endl;
+    cout << "========== YOUR HABITS ==========" << endl;
+    if(habits.empty())
+    {
+        cout << "No Habits Found." << endl;
+
         return;
     }
-    cout << "\n  " << string(65, '-') << endl;
-    cout << "  " << left
-              << setw(4)  << "ID"
-              << setw(20) << "Name"
-              << setw(10) << "Type"
-              << setw(10) << "Category"
-              << setw(8)  << "Streak"
-              << setw(8)  << "Longest"
-              << "Badge\n";
-    cout << "  " << string(65, '-') << endl;
-    for (auto& h : habits) {
-        cout << "  " << left
-                  << setw(4)  << h->getId()
-                  << setw(20) << h->getName()
-                  << setw(10) << h->getType()
-                  << setw(10) << h->getCategory()
-                  << setw(8)  << h->getStreakCount()
-                  << setw(8)  << h->getLongestStreak()
-                  << h->getAchievementBadge() << endl;
+    for(int i = 0; i < habits.size(); i++)
+    {
+        cout << endl;
+
+        cout << "Habit #" << i + 1 << endl;
+
+        habits[i]->displayStats();
     }
-    cout << "  " << string(65, '-') << endl;
+}
+void HabitManager::completeHabit()
+{
+    int choice;
+
+    viewHabits();
+    cout << endl;
+    cout << "Select Habit Number: ";
+    cin >> choice;
+    if(choice > 0 && choice <= habits.size())
+    {
+        habits[choice - 1]->calculateStreak();
+
+        cout << endl;
+        cout << "Habit Completed Successfully!" << endl;
+    }
+    else
+    {
+        cout << "Invalid Habit Number." << endl;
+    }
+}
+void HabitManager::deleteHabit()
+{
+    int choice;
+
+    viewHabits();
+    cout << endl;
+    cout << "Enter Habit Number To Delete: ";
+    cin >> choice;
+    if(choice > 0 && choice <= habits.size())
+    {
+        delete habits[choice - 1];
+
+        habits.erase(habits.begin() + (choice - 1));
+
+        cout << endl;
+        cout << "Habit Deleted Successfully." << endl;
+    }
+    else
+    {
+        cout << "Invalid Habit Number." << endl;
+    }
+}
+void HabitManager::editHabit()
+{
+    int choice;
+    string newName;
+    string newCategory;
+    viewHabits();
+    cout << endl;
+    cout << "Enter Habit Number To Edit: ";
+    cin >> choice;
+    if(choice > 0 && choice <= habits.size())
+    {
+        cout << "Enter New Habit Name: ";
+        cin >> newName;
+
+        cout << "Enter New Category: ";
+        cin >> newCategory;
+
+        delete habits[choice - 1];
+
+        habits[choice - 1] = new DailyHabit(newName, newCategory);
+
+        cout << endl;
+        cout << "Habit Updated Successfully!" << endl;
+    }
+    else
+    {
+        cout << "Invalid Habit Number." << endl;
+    }
 }
 
-void HabitManager::dashboard() const {
-    cout << "\n  ════════════════════════════════════════\n";
-    cout << "           HABIT TRACKER DASHBOARD\n";
-    cout << "  ════════════════════════════════════════\n";
-    cout << "  Today: " << Habit::todayDate() << endl;
-    cout << "  Total habits: " << habits.size() << "\n\n";
-
-    for (auto& h : habits) {
-        double rate = StreakCalculator::completionRate(h.get(), 30);
-        int bar = (int)(rate / 5);
-        cout << "  [" << setw(2) << h->getId() << "] "
-                  << left << setw(18) << h->getName()
-                  << " Streak:" << setw(4) << h->getStreakCount()
-                  << " [";
-        for (int i = 0; i < 20; ++i)
-            cout << (i < bar ? "█" : "░");
-        cout << "] " << fixed << setprecision(0) << rate << "%\n";
+void HabitManager::showStatistics()
+{
+    int completedCount = 0;
+    int dailyCount = 0;
+    int weeklyCount = 0;
+    for(int i = 0; i < habits.size(); i++)
+    {
+        if(habits[i]->getType() == "Daily")
+        {
+            dailyCount++;
+        }
+        else
+        {
+            weeklyCount++;
+        }
     }
-    cout << "  ════════════════════════════════════════\n";
+    cout << endl;
+    cout << "========== STATISTICS ==========" << endl;
+    cout << "Total Habits: " << habits.size() << endl;
+    cout << "Daily Habits: " << dailyCount << endl;
+    cout << "Weekly Habits: " << weeklyCount << endl;
+    cout << "================================" << endl;
 }
-
-const vector<shared_ptr<Habit>>& HabitManager::getAll() const {
+vector<Habit*>& HabitManager::getHabits()
+{
     return habits;
 }
-
-int HabitManager::getNextId() { return nextId++; }
+HabitManager::~HabitManager()
+{
+    for(int i = 0; i < habits.size(); i++)
+    {
+        delete habits[i];
+    }
+}
