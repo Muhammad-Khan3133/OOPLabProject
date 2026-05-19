@@ -20,21 +20,20 @@ void Menu::run()
     else
     {
         cout << "Enter Username: ";
-        cin >> username;
+        getline(cin, username);
         currentUser.setUsername(username);
         file.saveUser(currentUser);
     }
     int choice = -1;
     while(choice != 0)
     {
-        cout << endl;
+        cout << endl;       
         cout << "======================================" << endl;
         cout << "         HABIT TRACKER SYSTEM         " << endl;
         cout << "======================================" << endl;
         cout << endl;
         cout << "Logged In As: " << currentUser.getUsername() << endl;
         cout << endl;
-
         cout << "1. Add Habit" << endl;
         cout << "2. View Habits" << endl;
         cout << "3. Complete Habit" << endl;
@@ -45,42 +44,63 @@ void Menu::run()
         cout << "0. Exit Program" << endl;
         cout << endl;
         cout << "======================================" << endl;
-        cout << "Enter Your Choice: ";
-        cin >> choice;
-        cout << endl;
-
-        switch(choice)
+        while (true)
         {
-            case 1:
-                manager.addHabit();
-                break;
-            case 2:
-                manager.viewHabits();
-                break;
-            case 3:
-                manager.completeHabit();
-                break;
-            case 4:
-                manager.deleteHabit();
-                break;
-            case 5:
-                manager.editHabit();
-                break;
-            case 6:
-                manager.showStatistics();
-                break;
-            case 7:
-                file.saveData(manager);
-                file.saveUser(currentUser);
-                break;
-            case 0:
-                file.saveData(manager);
-                file.saveUser(currentUser);
-                cout << "Saving Data and Exiting Program..." << endl;
-                break;
+            cout << "Enter Your Choice: ";
+            cin >> choice;
+            cout << endl;
+            if(cin.fail())
+            {
+                cin.clear();
+                cin.ignore(1000, '\n');
 
-            default:
                 cout << "Invalid Choice." << endl;
+            }
+            else
+            {
+                switch(choice)
+                {
+                    case 1:
+                    manager.addHabit();
+                    break;
+
+                    case 2:
+                    manager.viewHabits();
+                    break;
+
+                    case 3:
+                    manager.completeHabit();
+                    break;
+
+                    case 4:
+                    manager.deleteHabit();
+                    break;
+
+                    case 5:
+                    manager.editHabit();
+                    break;
+
+                    case 6:
+                    manager.showStatistics();
+                    break;
+
+                    case 7:
+                    file.saveData(manager);
+                    file.saveUser(currentUser);
+                    break;
+
+                    case 0:
+                    file.saveData(manager);
+                    file.saveUser(currentUser);
+                    cout << "Saving Data and Exiting Program..." << endl;
+                    break;
+
+                    default:
+                    cout << "Invalid Choice." << endl;
+                    continue;
+                }
+            break;
+            }
         }
     }
 }
