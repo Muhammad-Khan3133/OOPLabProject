@@ -11,14 +11,16 @@ protected:
     int streak;
     int longestStreak;
     bool completed;
+    int goal;
 
 public:
     Habit();
-    Habit(string n, string c);
+    Habit(string n, string c, int g);
     virtual void calculateStreak() = 0;
     void displayStats();
     string getName();
     string getCategory();
+    int getGoal();
     virtual string getType() = 0;
     virtual ~Habit();
 };
