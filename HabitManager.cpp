@@ -1,3 +1,4 @@
+#include <iostream>
 #include "HabitManager.h"
 using namespace std;
 
@@ -47,7 +48,6 @@ void HabitManager::addHabit()
             cout << "Enter Goal (Number Of Weeks): ";
         }
         cin >> goal;
-
         if(cin.fail() || goal <= 0)
         {
             cin.clear();
@@ -112,7 +112,7 @@ void HabitManager::completeHabit()
         }
         cout << "Invalid Habit Number." << endl;
     }
-    habits[choice - 1]->calculateStreak();
+    habits[choice - 1]->complete();
     cout << endl;
     cout << "Habit Completed Successfully!" << endl;
 }
@@ -148,7 +148,6 @@ void HabitManager::deleteHabit()
     cout << endl;
     cout << "Habit Deleted Successfully." << endl;
 }
-
 void HabitManager::editHabit()
 {
     int choice;

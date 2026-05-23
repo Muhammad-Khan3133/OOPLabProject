@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <ctime>
 using namespace std;
 
 class Habit
@@ -12,15 +13,20 @@ protected:
     int longestStreak;
     bool completed;
     int goal;
+    time_t lastCompleted;
 
 public:
     Habit();
     Habit(string n, string c, int g);
-    virtual void calculateStreak() = 0;
+    virtual void complete() = 0;
+    virtual string getType() = 0;
     void displayStats();
     string getName();
     string getCategory();
     int getGoal();
-    virtual string getType() = 0;
+    int getStreak();
+    time_t getLastCompleted();
+    void setStreak(int s);
+    void setLastCompleted(time_t t);
     virtual ~Habit();
 };

@@ -6,14 +6,13 @@ class DailyHabit : public Habit
 {
 public:
     DailyHabit(string n, string c, int g);
-    void calculateStreak();
+    void complete();
     string getType();
 };
-
 class WeeklyHabit : public Habit
 {
 public:
     WeeklyHabit(string n, string c, int g);
-    void calculateStreak();
+    void complete();
     string getType();
 };

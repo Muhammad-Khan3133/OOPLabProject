@@ -1,17 +1,31 @@
 #include "DerivedHabits.h"
+#include <iostream>
+#include <ctime>
 using namespace std;
 
 DailyHabit::DailyHabit(string n, string c, int g) : Habit(n, c, g)
 {
 }
-void DailyHabit::calculateStreak()
+void DailyHabit::complete()
 {
-    streak++;
-    completed = true;
-    if(streak > longestStreak)
+    time_t now = time(0);
+    if (lastCompleted != 0)
     {
-        longestStreak = streak;
+        double secondsPassed = difftime(now, lastCompleted);
+        if (secondsPassed < 86400)
+        {
+            cout << "Come back in 24 hours!" << endl;
+            return;
+        }
+        if (secondsPassed > 172800)
+        {
+            cout << "Streak reset due to inactivity." << endl;
+            streak = 0;
+        }
     }
+    streak++;
+    lastCompleted = now;
+    cout << "Daily habit completed!" << endl;
 }
 string DailyHabit::getType()
 {
@@ -20,14 +34,26 @@ string DailyHabit::getType()
 WeeklyHabit::WeeklyHabit(string n, string c, int g) : Habit(n, c, g)
 {
 }
-void WeeklyHabit::calculateStreak()
+void WeeklyHabit::complete()
 {
-    streak++;
-    completed = true;
-    if(streak > longestStreak)
+    time_t now = time(0);
+    if (lastCompleted != 0)
     {
-        longestStreak = streak;
+        double secondsPassed = difftime(now, lastCompleted);
+        if (secondsPassed < 604800)
+        {
+            cout << "Come back next week!" << endl;
+            return;
+        }
+        if (secondsPassed > 1209600)
+        {
+            cout << "Streak reset due to inactivity." << endl;
+            streak = 0;
+        }
     }
+    streak++;
+    lastCompleted = now;
+    cout << "Weekly habit completed!" << endl;
 }
 string WeeklyHabit::getType()
 {
