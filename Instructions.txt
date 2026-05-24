@@ -1,0 +1,12 @@
+
+In Order to run the program paste these 2 commands into the terminal
+
+1- g++ main.cpp Habit.cpp DerivedHabits.cpp User.cpp HabitManager.cpp FileManager.cpp Menu.cpp -o habit_tracker (run in derivedhabits.cpp file)
+
+2- For windows use:
+	habit_tracker.exe    
+
+   For MacOS use:
+	./habit_tracker
+
+Github Repository link: https://github.com/Muhammad-Khan3133/OOPLabProject
